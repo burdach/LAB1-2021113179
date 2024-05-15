@@ -1,0 +1,20 @@
+Nodes visited:
+new
+worlds
+to
+seek
+out
+new
+life
+and
+new
+
+Edges visited:
+new-worlds
+worlds-to
+to-seek
+seek-out
+out-new
+new-life
+life-and
+and-new
