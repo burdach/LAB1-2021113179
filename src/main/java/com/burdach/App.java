@@ -46,22 +46,22 @@ public class App
             System.out.println("无效的输入。");
         }
 
-        //询问用户是否要使用根据bridge word生成新文本
-        System.out.println("是否要使用根据bridge word生成新文本功能?(输入 y 使用，输入 n 跳过)");
-        String input2 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
-        if (input2.equals("y"))
-        {
-            //调用根据BridgeWords生成新文本功能
-            generate(scanner);
+        // //询问用户是否要使用根据bridge word生成新文本
+        // System.out.println("是否要使用根据bridge word生成新文本功能?(输入 y 使用，输入 n 跳过)");
+        // String input2 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
+        // if (input2.equals("y"))
+        // {
+        //     //调用根据BridgeWords生成新文本功能
+        //     generate(scanner);
 
-        }else if(input2.equals("n"))
-        {
-            System.out.println("已跳过查询桥接词功能。");
-        }
-        else
-        {
-            System.out.println("无效的输入。");
-        }
+        // }else if(input2.equals("n"))
+        // {
+        //     System.out.println("已跳过查询桥接词功能。");
+        // }
+        // else
+        // {
+        //     System.out.println("无效的输入。");
+        // }
         // 询问用户是否要使用查询最短路径功能
         System.out.println("是否要使用查询最短路径功能?(输入 y 使用，输入 n 跳过)");
         String input3 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
