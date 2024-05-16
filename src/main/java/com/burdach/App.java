@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -155,7 +156,12 @@ public class App
                 // 添加边到图中
                 if (i > 0) {
                     String previousWord = words[i - 1].toLowerCase(); // 不区分大小写
-                    graph.addEdge(previousWord + "-" + word, previousWord, word, true);
+                    String edgeId = previousWord + "-" + word;
+
+                    // 在添加边之前检查是否已经存在
+                    if (graph.getEdge(edgeId) == null) {
+                        graph.addEdge(edgeId, previousWord, word, true);
+                    }
                 }
             }
             // 关闭文件扫描器
@@ -193,28 +199,62 @@ public class App
         System.out.println("有向图中的边数量：" + graph.getEdgeCount());
         // 可视化有向图
         System.setProperty("org.graphstream.ui", "swing");
+        // 创建图形界面
+        graph.display();
+        // 设置样式表
+        String styleSheet = 
+            "graph { " +
+            "   fill-color: white; " +
+            "   padding: 60px; " +
+            "} " +
+            "node { " +
+            "   fill-color: lightblue; " +
+            "   size: 50px, 50px; " +
+            "   shape: circle; " +
+            "   stroke-mode: plain; " +
+            "   stroke-color: black; " +
+            "   stroke-width: 1px; " +
+            "   text-mode: normal; " + // 修改为 normal
+            "   text-size: 20px; " +
+            "   z-index: 0; " +
+            "} " +
+            "node#space { " +
+            "   size: 100px, 100px; " +  // 增加节点间距
+            "} " +
+            "edge { " +
+            "   fill-color: grey; " +
+            "   arrow-size: 10px, 6px; " +
+            "   text-alignment: under; " +
+            "   text-size: 16px; " +
+            "} " +
+            "edge .highlighted { " +
+            "   fill-color: red; " +
+            "   size: 4px; " +
+            "   arrow-size: 12px, 8px; " +
+            "} ";
+
+        graph.setAttribute("ui.stylesheet", styleSheet);
+
         // 设置节点标签
         graph.nodes().forEach(node -> {
             node.setAttribute("ui.label", node.getId());
-            node.setAttribute("ui.style", "text-size: 48;"); // 设置节点标签字体大小为 48
         });
-        // 设置边标签
+        
+        // 设置边标签和初始样式
         graph.edges().forEach(edge -> {
             Object weightObj = edge.getAttribute("weight");
             if (weightObj instanceof Integer) {
                 int weight = (int) weightObj;
                 edge.setAttribute("ui.label", Integer.toString(weight));
-            } else {
-                // 处理类型不匹配的情况，例如设定一个默认值
-                edge.setAttribute("ui.label", "Unknown");
             }
-            edge.setAttribute("ui.style", "text-size: 36;"); // 设置边标签字体大小为 36
-            edge.setAttribute("ui.size", 8); //设置边的粗细为8
+            edge.setAttribute("ui.class", "default");
         });
-
-        // 创建图形界面
-        graph.display();
-        // 保存图形为PNG格式
+        // 应用 SpringBox 布局算法
+        SpringBox layout = new SpringBox();
+        layout.setStabilizationLimit(0.9);
+        graph.addSink(layout);
+        layout.addSink(graph);
+        layout.compute();
     }
     public static void queryBridgeWords(String word1, String word2)
     {
@@ -362,15 +402,15 @@ public class App
 
     public static void highlightPath(List<Integer> shortestPath) {
         // 清除之前的高亮显示
-        graph.edges().forEach(edge -> edge.removeAttribute("ui.style"));
-    
+        graph.edges().forEach(edge -> edge.setAttribute("ui.class", "default"));
+
         // 突出显示当前路径
         for (int i = 0; i < shortestPath.size() - 1; i++) {
             String sourceId = graph.getNode(shortestPath.get(i)).getId();
             String targetId = graph.getNode(shortestPath.get(i + 1)).getId();
             Edge edge = graph.getEdge(sourceId + "-" + targetId);
             if (edge != null) {
-                edge.setAttribute("ui.style", "fill-color: red; size: 10px;");
+                edge.setAttribute("ui.class", "highlighted");
             }
         }
     }

@@ -1,20 +1,20 @@
 Nodes visited:
-new
-worlds
-to
-seek
-out
-new
-life
-and
-new
+s
+workshop
+packs
+or
+as
+a
+complete
+card
+library
 
 Edges visited:
-new-worlds
-worlds-to
-to-seek
-seek-out
-out-new
-new-life
-life-and
-and-new
+s-workshop
+workshop-packs
+packs-or
+or-as
+as-a
+a-complete
+complete-card
+card-library
