@@ -202,6 +202,7 @@ public class App
         // 创建图形界面
         graph.display();
         // 设置样式表
+        
         String styleSheet = 
             "graph { " +
             "   fill-color: white; " +
