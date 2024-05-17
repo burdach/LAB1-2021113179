@@ -6,12 +6,20 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 import org.graphstream.graph.implementations.*;
+import org.graphstream.ui.geom.Point3;
 import org.graphstream.ui.layout.springbox.implementations.SpringBox;
+import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerListener;
+import org.graphstream.ui.view.ViewerPipe;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Scanner;
 import java.util.stream.Collectors;
+
+import javax.swing.SwingUtilities;
+
 import org.graphstream.graph.*;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -193,16 +201,16 @@ public class App
 
         return graph;
     }
+    /**
+     * @param graph
+     */
     public static void showDirectedGraph(Graph graph ) {
         // 打印有向图的信息
         System.out.println("有向图中的节点数量：" + graph.getNodeCount());
         System.out.println("有向图中的边数量：" + graph.getEdgeCount());
         // 可视化有向图
         System.setProperty("org.graphstream.ui", "swing");
-        // 创建图形界面
-        graph.display();
         // 设置样式表
-        
         String styleSheet = 
             "graph { " +
             "   fill-color: white; " +
@@ -211,27 +219,28 @@ public class App
             "node { " +
             "   fill-color: lightblue; " +
             "   size: 50px, 50px; " +
-            "   shape: circle; " +
+            "   shape: box; " + // 修改为矩形
             "   stroke-mode: plain; " +
             "   stroke-color: black; " +
             "   stroke-width: 1px; " +
-            "   text-mode: normal; " + // 修改为 normal
+            "   text-mode: normal; " +
             "   text-size: 20px; " +
             "   z-index: 0; " +
             "} " +
             "node#space { " +
-            "   size: 100px, 100px; " +  // 增加节点间距
+            "   size: 100px, 100px; " +
             "} " +
             "edge { " +
             "   fill-color: grey; " +
-            "   arrow-size: 10px, 6px; " +
+            "   arrow-size: 20px, 12px; " +
+            "   size: 3px; " + // 增大边的宽度
             "   text-alignment: under; " +
             "   text-size: 16px; " +
             "} " +
             "edge .highlighted { " +
             "   fill-color: red; " +
-            "   size: 4px; " +
-            "   arrow-size: 12px, 8px; " +
+            "   size: 6px; " +
+            "   arrow-size: 24px, 16px; " +
             "} ";
 
         graph.setAttribute("ui.stylesheet", styleSheet);
@@ -251,11 +260,64 @@ public class App
             edge.setAttribute("ui.class", "default");
         });
         // 应用 SpringBox 布局算法
-        SpringBox layout = new SpringBox();
-        layout.setStabilizationLimit(0.9);
-        graph.addSink(layout);
-        layout.addSink(graph);
-        layout.compute();
+        // SpringBox layout = new SpringBox();
+        // layout.setStabilizationLimit(0.99);//增加稳定性
+        // graph.addSink(layout);
+        // layout.addSink(graph);
+        // layout.compute();
+        // 显示图形
+        Viewer viewer = graph.display();
+        ViewerPipe viewerPipe = viewer.newViewerPipe();
+        viewerPipe.addViewerListener(new ViewerListener() {
+            private Node node = null;
+        
+            @Override
+            public void viewClosed(String id) {}
+        
+            @Override
+            public void buttonPushed(String id) {
+                node = graph.getNode(id);
+            }
+        
+            @Override
+            public void buttonReleased(String id) {
+                if (node != null) {
+                    System.out.println("Node " + node.getId() + " was clicked.");
+                    node = null;
+                }
+            }
+
+            @Override
+            public void mouseLeft(String id) {
+                // Add your code here for when the mouse leaves the node
+                Node node = graph.getNode(id);
+                node.removeAttribute("ui.style");
+                
+                java.awt.Point point = java.awt.MouseInfo.getPointerInfo().getLocation();
+                java.awt.Component defaultViewComponent = (java.awt.Component) viewer.getDefaultView();
+                SwingUtilities.convertPointFromScreen(point, defaultViewComponent);
+
+                // 获取视图的缩放和平移
+                Point3 viewCenter = viewer.getDefaultView().getCamera().getViewCenter();
+                double viewPercent = viewer.getDefaultView().getCamera().getViewPercent();
+
+                // 考虑视图的缩放和平移
+                double guX = (point.x - viewCenter.x) / viewPercent;
+                double guY = (point.y - viewCenter.y) / viewPercent;
+
+                node.setAttribute("xy", guX, guY);
+            }
+
+            public void mouseOver(String id) {
+                // Add your code here for when the mouse is over the node
+                Node node = graph.getNode(id);
+                node.setAttribute("ui.style", "fill-color: red;");
+            }
+        });
+        
+        while (true) {
+            viewerPipe.pump();
+        }
     }
     public static void queryBridgeWords(String word1, String word2)
     {
