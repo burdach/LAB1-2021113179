@@ -2,27 +2,22 @@ package com.burdach;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-import org.graphstream.graph.implementations.*;
-import org.graphstream.ui.geom.Point3;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.ViewerListener;
-import org.graphstream.ui.view.ViewerPipe;
-
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Random;
 import java.util.Scanner;
 import java.util.stream.Collectors;
 
-import javax.swing.SwingUtilities;
-
-import org.graphstream.graph.*;
-import java.io.FileWriter;
-import java.io.IOException;
-
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.stream.file.FileSinkGraphML;
 
 
 /**
@@ -95,7 +90,7 @@ public class App
         }
         scanner.close();
     }
-    public static void query(Scanner scanner) {
+    public static void query(Scanner scanner) {     //桥接词查询
         System.out.println("请输入word1: ");
         String word1 = scanner.nextLine();
         System.out.println("请输入word2: ");
@@ -104,7 +99,7 @@ public class App
         queryBridgeWords(word1, word2);
     }
 
-    public static void generate(Scanner scanner)
+    public static void generate(Scanner scanner)          //随机文本生成
     {
         // 用户输入的新文本
         System.out.println("请输入一行新文本：");
@@ -114,7 +109,7 @@ public class App
         System.out.println("生成的新文本：");
         System.out.println(newText);
     }
-    public static void shortestPath(Scanner scanner) {
+    public static void shortestPath(Scanner scanner) {        //最短路径查询
         System.out.println("请输入word1: ");
         String word1 = scanner.nextLine();
         System.out.println("请输入word2: ");
@@ -122,7 +117,7 @@ public class App
         String result = calcShortestPath(word1, word2);
         System.out.println(result);
     }
-    public static Graph processText(String filePath) {
+    public static Graph processText(String filePath) {       //生成图
         Graph graph = new SingleGraph("TextGraph");
 
         try {
@@ -140,7 +135,12 @@ public class App
 
                 // 只保留英文字符和空格，其他字符替换为空格
                 line = line.replaceAll("[^a-zA-Z\\s]+", " ");
+
+                // 将多个连续空格替换为单个空格
+                line = line.replaceAll("\\s+", " ");
+
                 processedText.append(line).append(" ");
+
             }
             // 将处理后的文本内容转换为一行
             String processedLine = processedText.toString().trim();
@@ -193,6 +193,13 @@ public class App
 
         // 将计算得到的权重设置为边的属性
         edge.setAttribute("weight", weight);
+        //保存图到本地文件
+        FileSinkGraphML graphML = new FileSinkGraphML();
+        try {
+            graphML.writeAll(graph, "output.graphml");
+        } catch (IOException e) {
+            System.out.println("保存图为 GraphML 文件时出错: " + e.getMessage());
+        }
         });}
         catch (FileNotFoundException e) {
             System.out.println("文件未找到: " + e.getMessage());
@@ -203,7 +210,7 @@ public class App
     /**
      * @param graph
      */
-    public static void showDirectedGraph(Graph graph ) {
+    public static void showDirectedGraph(Graph graph ) {            //显示图
         // 打印有向图的信息
         System.out.println("有向图中的节点数量：" + graph.getNodeCount());
         System.out.println("有向图中的边数量：" + graph.getEdgeCount());
@@ -217,24 +224,24 @@ public class App
             "} " +
             "node { " +
             "   fill-color: lightblue; " +
-            "   size: 50px, 50px; " +
+            "   size: 90px, 35px; " +
             "   shape: box; " + // 修改为矩形
             "   stroke-mode: plain; " +
             "   stroke-color: black; " +
             "   stroke-width: 1px; " +
             "   text-mode: normal; " +
-            "   text-size: 20px; " +
+            "   text-size: 18px; " +
             "   z-index: 0; " +
             "} " +
             "node#space { " +
-            "   size: 100px, 100px; " +
+            "   size: 200px, 200px; " +
             "} " +
             "edge { " +
             "   fill-color: grey; " +
             "   arrow-size: 20px, 12px; " +
-            "   size: 3px; " + // 增大边的宽度
+            "   size: 1px; " + // 增大边的宽度
             "   text-alignment: under; " +
-            "   text-size: 16px; " +
+            "   text-size: 30px; " +
             "} " +
             "edge .highlighted { " +
             "   fill-color: red; " +
@@ -258,65 +265,10 @@ public class App
             }
             edge.setAttribute("ui.class", "default");
         });
-        // 应用 SpringBox 布局算法
-        // SpringBox layout = new SpringBox();
-        // layout.setStabilizationLimit(0.99);//增加稳定性
-        // graph.addSink(layout);
-        // layout.addSink(graph);
-        // layout.compute();
+
         // 显示图形
-        Viewer viewer = graph.display();
-        ViewerPipe viewerPipe = viewer.newViewerPipe();
-        viewerPipe.addViewerListener(new ViewerListener() {
-            private Node node = null;
-        
-            @Override
-            public void viewClosed(String id) {}
-        
-            @Override
-            public void buttonPushed(String id) {
-                node = graph.getNode(id);
-            }
-        
-            @Override
-            public void buttonReleased(String id) {
-                if (node != null) {
-                    System.out.println("Node " + node.getId() + " was clicked.");
-                    node = null;
-                }
-            }
+        graph.display();
 
-            @Override
-            public void mouseLeft(String id) {
-                // Add your code here for when the mouse leaves the node
-                Node node = graph.getNode(id);
-                node.removeAttribute("ui.style");
-                
-                java.awt.Point point = java.awt.MouseInfo.getPointerInfo().getLocation();
-                java.awt.Component defaultViewComponent = (java.awt.Component) viewer.getDefaultView();
-                SwingUtilities.convertPointFromScreen(point, defaultViewComponent);
-
-                // 获取视图的缩放和平移
-                Point3 viewCenter = viewer.getDefaultView().getCamera().getViewCenter();
-                double viewPercent = viewer.getDefaultView().getCamera().getViewPercent();
-
-                // 考虑视图的缩放和平移
-                double guX = (point.x - viewCenter.x) / viewPercent;
-                double guY = (point.y - viewCenter.y) / viewPercent;
-
-                node.setAttribute("xy", guX, guY);
-            }
-
-            public void mouseOver(String id) {
-                // Add your code here for when the mouse is over the node
-                Node node = graph.getNode(id);
-                node.setAttribute("ui.style", "fill-color: red;");
-            }
-        });
-        
-        while (true) {
-            viewerPipe.pump();
-        }
     }
     public static void queryBridgeWords(String word1, String word2)
     {
