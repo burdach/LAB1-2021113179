@@ -224,22 +224,22 @@ public class App
             "} " +
             "node { " +
             "   fill-color: lightblue; " +
-            "   size: 100px, 50px; " +
+            "   size: 90px, 35px; " +
             "   shape: box; " + // 修改为矩形
             "   stroke-mode: plain; " +
             "   stroke-color: black; " +
             "   stroke-width: 1px; " +
             "   text-mode: normal; " +
-            "   text-size: 30px; " +
+            "   text-size: 18px; " +
             "   z-index: 0; " +
             "} " +
             "node#space { " +
-            "   size: 200px, 100px; " +
+            "   size: 200px, 200px; " +
             "} " +
             "edge { " +
             "   fill-color: grey; " +
             "   arrow-size: 20px, 12px; " +
-            "   size: 3px; " + // 增大边的宽度
+            "   size: 1px; " + // 增大边的宽度
             "   text-alignment: under; " +
             "   text-size: 30px; " +
             "} " +

@@ -61,58 +61,26 @@
 		</node>
 		<node id="golden">
 		</node>
-		<node id="comes">
-		</node>
-		<node id="with">
-		</node>
-		<node id="bonus">
-		</node>
-		<node id="diamond">
-		</node>
-		<node id="copy">
-		</node>
-		<node id="of">
-		</node>
-		<node id="puppetmaster">
-		</node>
-		<node id="dorian">
-		</node>
-		<node id="legendary">
-		</node>
-		<node id="minion">
-		</node>
-		<node id="you">
-		</node>
-		<node id="can">
-		</node>
-		<node id="see">
-		</node>
-		<node id="from">
-		</node>
-		<node id="official">
-		</node>
-		<node id="library">
-		</node>
 		<edge id="the-dr" source="the" target="dr" directed="true">
 			<data key="attr0000">1</data>
 		</edge>
 		<edge id="dr-boom" source="dr" target="boom" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="boom-s" source="boom" target="s" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="s-incredible" source="s" target="incredible" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="incredible-inventions" source="incredible" target="inventions" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="inventions-mini" source="inventions" target="mini" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="mini-set" source="mini" target="set" directed="true">
-			<data key="attr0000">3</data>
+			<data key="attr0000">2</data>
 		</edge>
 		<edge id="set-has" source="set" target="has" directed="true">
 			<data key="attr0000">1</data>
@@ -193,90 +161,12 @@
 			<data key="attr0000">1</data>
 		</edge>
 		<edge id="the-all" source="the" target="all" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="all-golden" source="all" target="golden" directed="true">
-			<data key="attr0000">2</data>
+			<data key="attr0000">1</data>
 		</edge>
 		<edge id="golden-version" source="golden" target="version" directed="true">
-			<data key="attr0000">2</data>
-		</edge>
-		<edge id="gold-the" source="gold" target="the" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="version-comes" source="version" target="comes" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="comes-with" source="comes" target="with" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="with-a" source="with" target="a" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="a-bonus" source="a" target="bonus" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="bonus-diamond" source="bonus" target="diamond" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="diamond-copy" source="diamond" target="copy" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="copy-of" source="copy" target="of" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="of-the" source="of" target="the" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="the-puppetmaster" source="the" target="puppetmaster" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="puppetmaster-dorian" source="puppetmaster" target="dorian" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="dorian-legendary" source="dorian" target="legendary" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="legendary-minion" source="legendary" target="minion" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="minion-you" source="minion" target="you" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="you-can" source="you" target="can" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="can-see" source="can" target="see" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="see-all" source="see" target="all" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="all-the" source="all" target="the" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="the-cards" source="the" target="cards" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="cards-from" source="cards" target="from" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="from-dr" source="from" target="dr" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="set-in" source="set" target="in" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="in-the" source="in" target="the" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="the-official" source="the" target="official" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="official-card" source="official" target="card" directed="true">
-			<data key="attr0000">1</data>
-		</edge>
-		<edge id="card-library" source="card" target="library" directed="true">
 			<data key="attr0000">1</data>
 		</edge>
 	</graph>

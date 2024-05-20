@@ -1,20 +1,32 @@
 Nodes visited:
+whizbang
 s
 workshop
 packs
 or
-as
-a
-complete
-card
-library
+get
+the
+dr
+boom
+s
+incredible
+inventions
+mini
+set
+get
 
 Edges visited:
+whizbang-s
 s-workshop
 workshop-packs
 packs-or
-or-as
-as-a
-a-complete
-complete-card
-card-library
+or-get
+get-the
+the-dr
+dr-boom
+boom-s
+s-incredible
+incredible-inventions
+inventions-mini
+mini-set
+set-get
