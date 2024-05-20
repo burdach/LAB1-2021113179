@@ -7,7 +7,6 @@ import java.util.Map;
 import java.util.Random;
 import org.graphstream.graph.implementations.*;
 import org.graphstream.ui.geom.Point3;
-import org.graphstream.ui.layout.springbox.implementations.SpringBox;
 import org.graphstream.ui.view.Viewer;
 import org.graphstream.ui.view.ViewerListener;
 import org.graphstream.ui.view.ViewerPipe;
