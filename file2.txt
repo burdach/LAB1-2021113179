@@ -1,5 +1,2 @@
-<<<<<<< HEAD
 Different modification in file2 on B1
-=======
 Modification in file2 on C4
->>>>>>> C4
