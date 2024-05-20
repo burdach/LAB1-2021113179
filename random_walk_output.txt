@@ -1,0 +1,20 @@
+Nodes visited:
+s
+workshop
+packs
+or
+as
+a
+complete
+card
+library
+
+Edges visited:
+s-workshop
+workshop-packs
+packs-or
+or-as
+as-a
+a-complete
+complete-card
+card-library
