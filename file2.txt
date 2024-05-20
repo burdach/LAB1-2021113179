@@ -1,1 +1,5 @@
-test change for file2 on B2
+<<<<<<< HEAD
+Different modification in file2 on B1
+=======
+Modification in file2 on C4
+>>>>>>> C4
