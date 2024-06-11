@@ -118,7 +118,7 @@ public class App
         System.out.println(result);
     }
     public static Graph processText(String filePath) {       //生成图
-        Graph graph = new SingleGraph("TextGraph");
+        Graph localGraph = new SingleGraph("TextGraph");
 
         try {
             // 创建文件扫描器
@@ -156,8 +156,8 @@ public class App
                 wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
 
                 // 添加节点到图中
-                if (graph.getNode(word)==null) {
-                    graph.addNode(word);
+                if (localGraph.getNode(word)==null) {
+                    localGraph.addNode(word);
                 }
 
                 // 添加边到图中
@@ -166,15 +166,15 @@ public class App
                     String edgeId = previousWord + "-" + word;
 
                     // 在添加边之前检查是否已经存在
-                    if (graph.getEdge(edgeId) == null) {
-                        graph.addEdge(edgeId, previousWord, word, true);
+                    if (localGraph.getEdge(edgeId) == null) {
+                        localGraph.addEdge(edgeId, previousWord, word, true);
                     }
                 }
             }
             // 关闭文件扫描器
             scanner.close();
             // 设置边的权重为单词相邻出现的次数
-        graph.edges().forEach(edge -> {
+        localGraph.edges().forEach(edge -> {
             String[] nodes = edge.getId().split("-");
             String source = nodes[0];
             String target = nodes[1];
@@ -196,7 +196,7 @@ public class App
         //保存图到本地文件
         FileSinkGraphML graphML = new FileSinkGraphML();
         try {
-            graphML.writeAll(graph, "output.graphml");
+            graphML.writeAll(localGraph, "output.graphml");
         } catch (IOException e) {
             System.out.println("保存图为 GraphML 文件时出错: " + e.getMessage());
         }
@@ -205,7 +205,7 @@ public class App
             System.out.println("文件未找到: " + e.getMessage());
         }
 
-        return graph;
+        return localGraph;
     }
     /**
      * @param graph
@@ -260,11 +260,11 @@ public class App
         graph.edges().forEach(edge -> {
             Object weightObj = edge.getAttribute("weight");
             if (weightObj instanceof Integer) {
-                int weight = (int) weightObj;
+                int weight = Integer.parseInt(weightObj.toString());
                 edge.setAttribute("ui.label", Integer.toString(weight));
             }
             edge.setAttribute("ui.class", "default");
-        });
+            });
 
         // 显示图形
         graph.display();
@@ -322,7 +322,7 @@ public class App
     }
     public static void printMiddleNodes(List<String> middleNodes) {
         StringBuilder result = new StringBuilder("The bridge words from word1 to word2 are:");
-        if(middleNodes.size()==0)
+        if(middleNodes.isEmpty())
         {
             //桥接词列表为空
             System.out.println("No bridge words from word1 to word2!");
@@ -475,7 +475,7 @@ public class App
             visitedNodes.add(currentNode);
             //获取当前节点的出边
             List<String> outgoingNodes = getOutgoingNodes(currentNode);
-            if (outgoingNodes.size()==0)
+            if (outgoingNodes.isEmpty())
             {
                 // 当前节点不存在出边，遍历结束
                 System.out.println("No outgoing edges from node: " + currentNode);
