@@ -96,7 +96,8 @@ public class App
         System.out.println("请输入word2: ");
         String word2 = scanner.nextLine();
         // 调用TextToGraph类中的QueryBridgeWords函数
-        queryBridgeWords(word1, word2);
+        String result = queryBridgeWords(graph, word1, word2);
+        System.out.println(result);
     }
 
     public static void generate(Scanner scanner)          //随机文本生成
@@ -114,7 +115,7 @@ public class App
         String word1 = scanner.nextLine();
         System.out.println("请输入word2: ");
         String word2 = scanner.nextLine();
-        String result = calcShortestPath(word1, word2);
+        String result = calcShortestPath(graph, word1, word2);
         System.out.println(result);
     }
     public static Graph processText(String filePath) {       //生成图
@@ -270,22 +271,29 @@ public class App
         graph.display();
 
     }
-    public static void queryBridgeWords(String word1, String word2)
+    public static String queryBridgeWords(Graph graph, String word1, String word2)
     {
-        
+        if (graph == null) {
+            return "No graph!";
+        }
         //检查word1和word2是否在图中存在
         if(graph.getNode(word1)==null || graph.getNode(word2)==null)
         {
-            System.out.println("No word1 or word2 in the graph!");
+            // System.out.println("No word1 or word2 in the graph!");
+            return "No word1 or word2 in the graph!";
         }
-        List<String> bridgeNodes = findMiddleNodes(word1, word2);
-        printMiddleNodes(bridgeNodes);
+        List<String> bridgeNodes = findMiddleNodes(graph, word1, word2);
+        // 定义一个字符串
+        String result = printMiddleNodes(bridgeNodes);
+        // printMiddleNodes(bridgeNodes);
+        return result;
     }
-    public static List<String> getOutgoingNodes(String word1) {
+    public static List<String> getOutgoingNodes(Graph graph, String word1) {
         List<String> outgoingNodes = new ArrayList<>();
         
         // 获取节点 word1
-        Node node1 = App.graph.getNode(word1);
+        // Node node1 = App.graph.getNode(word1);
+        Node node1 = graph.getNode(word1);
         if (node1 == null) {
             // 如果节点 word1 不存在，则返回空列表
             return outgoingNodes;
@@ -302,16 +310,16 @@ public class App
         } 
         return outgoingNodes;
     }
-    public static List<String> findMiddleNodes(String word1, String word2) {
+    public static List<String> findMiddleNodes(Graph graph, String word1, String word2) {
         List<String> middleNodes = new ArrayList<>();
     
         // 获取与 word1 相连的节点
-        List<String> outgoingWord1 = getOutgoingNodes(word1);
+        List<String> outgoingWord1 = getOutgoingNodes(graph, word1);
     
         // 遍历与 word1 相连的节点
         for (String node : outgoingWord1) {
             // 获取与相连节点相连的节点
-            List<String> outgoingNode = getOutgoingNodes(node);
+            List<String> outgoingNode = getOutgoingNodes(graph, node);
             // 如果相连节点中包含 word2，则将中间节点添加到列表中
             if (outgoingNode.contains(word2)) {
                 middleNodes.add(node);
@@ -320,13 +328,13 @@ public class App
     
         return middleNodes;
     }
-    public static void printMiddleNodes(List<String> middleNodes) {
+    public static String printMiddleNodes(List<String> middleNodes) {
         StringBuilder result = new StringBuilder("The bridge words from word1 to word2 are:");
         if(middleNodes.isEmpty())
         {
             //桥接词列表为空
-            System.out.println("No bridge words from word1 to word2!");
-            return;
+            // System.out.println("No bridge words from word1 to word2!");
+            return "No bridge words from word1 to word2!";
         }
         for (int i = 0; i < middleNodes.size(); i++) {
             result.append(middleNodes.get(i));
@@ -334,7 +342,8 @@ public class App
                 result.append(", ");
             }
         }
-        System.out.println(result.toString());
+        // System.out.println(result.toString());
+        return result.toString();
     }
     public static String generateNewText(String inputText)
     {
@@ -345,7 +354,7 @@ public class App
         for (int i=0;i<words.length-1;i++)
         {
             newText.append(words[i]).append(" ");
-            List<String> bridgeWords = findMiddleNodes(words[i], words[i+1]);
+            List<String> bridgeWords = findMiddleNodes(graph, words[i], words[i+1]);
             if (!bridgeWords.isEmpty())
             {
                 String bridgeWord = bridgeWords.get(random.nextInt(bridgeWords.size()));
@@ -355,7 +364,10 @@ public class App
         newText.append(words[words.length-1]);
         return newText.toString();
     }
-    public static String calcShortestPath(String word1, String word2) {
+    public static String calcShortestPath(Graph graph, String word1, String word2) {
+        if (graph == null) {
+            return "No graph!";
+        }
         // 检查输入的单词是否在图中
         if (graph.getNode(word1) == null) {
             return "The word '" + word1 + "' is not in the graph.";
@@ -363,7 +375,6 @@ public class App
         if (graph.getNode(word2) == null) {
             return "The word '" + word2 + "' is not in the graph.";
         }
-
         // 构建邻接矩阵
         int[][] adjacencyMatrix = buildAdjacencyMatrix(graph);
         // 使用数组来保存起始点到各点的最短距离
@@ -408,7 +419,7 @@ public class App
             }
             pathString.append(graph.getNode(shortestPath.get(i)).getId());
         }
-        highlightPath(shortestPath);
+        // highlightPath(shortestPath);
         // 返回结果
         return "The shortest path from '" + word1 + "' to '" + word2 + "' is: " + pathString.toString()
                 + " with a length of " + dist[targetIndex];
@@ -474,7 +485,7 @@ public class App
         {
             visitedNodes.add(currentNode);
             //获取当前节点的出边
-            List<String> outgoingNodes = getOutgoingNodes(currentNode);
+            List<String> outgoingNodes = getOutgoingNodes(graph, currentNode);
             if (outgoingNodes.isEmpty())
             {
                 // 当前节点不存在出边，遍历结束
