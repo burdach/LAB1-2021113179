@@ -1,16 +1,4 @@
 Nodes visited:
-inventions
-mini
-set
-has
-all
-new
-cards
-get
-them
-in
-whizbang
-s
 workshop
 packs
 or
@@ -19,20 +7,15 @@ a
 complete
 card
 mini
+set
+get
+them
+in
+whizbang
+s
+workshop
 
 Edges visited:
-inventions-mini
-mini-set
-set-has
-has-all
-all-new
-new-cards
-cards-get
-get-them
-them-in
-in-whizbang
-whizbang-s
-s-workshop
 workshop-packs
 packs-or
 or-as
@@ -40,3 +23,10 @@ as-a
 a-complete
 complete-card
 card-mini
+mini-set
+set-get
+get-them
+them-in
+in-whizbang
+whizbang-s
+s-workshop
