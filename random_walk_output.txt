@@ -1,9 +1,4 @@
 Nodes visited:
-workshop
-packs
-or
-as
-a
 complete
 card
 mini
@@ -13,14 +8,11 @@ them
 in
 whizbang
 s
-workshop
+incredible
+inventions
+mini
 
 Edges visited:
-workshop-packs
-packs-or
-or-as
-as-a
-a-complete
 complete-card
 card-mini
 mini-set
@@ -29,4 +21,6 @@ get-them
 them-in
 in-whizbang
 whizbang-s
-s-workshop
+s-incredible
+incredible-inventions
+inventions-mini

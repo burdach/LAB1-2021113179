@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
@@ -26,70 +27,66 @@ import org.graphstream.stream.file.FileSinkGraphML;
  */
 public class App 
 {
-    public static Graph graph;
-    public static void main( String[] args )
-    {
+    static Graph graph; // Package-private
+    private static final Random RANDOM = new Random();
+    public static void main(String[] args) {
         String filePath = "input.txt"; // 文件路径   
         graph = processText(filePath);
         showDirectedGraph(graph);
-        //询问用户是否要使用查询桥接词功能
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("是否要使用查询桥接词功能？(输入 y 使用，输入 n 跳过)");
-        String input = scanner.nextLine().toLowerCase(); // 将输入转换为小写
-        if (input.equals("y"))
-        {
-            //调用查询桥接词函数
-            query(scanner);
-        }else if (input.equals("n"))
-        {
-            System.out.println("已跳过查询桥接词功能。");
-        }
-        else
-        {
-            System.out.println("无效的输入。");
-        }
-
-        //询问用户是否要使用根据bridge word生成新文本
-        System.out.println("是否要使用根据bridge word生成新文本功能?(输入 y 使用，输入 n 跳过)");
-        String input2 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
-        if (input2.equals("y"))
-        {
-            //调用根据BridgeWords生成新文本功能
-            generate(scanner);
-
-        }else if(input2.equals("n"))
-        {
-            System.out.println("已跳过查询桥接词功能。");
-        }
-        else
-        {
-            System.out.println("无效的输入。");
-        }
-        // 询问用户是否要使用查询最短路径功能
-        System.out.println("是否要使用查询最短路径功能?(输入 y 使用，输入 n 跳过)");
-        String input3 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
-        if (input3.equals("y")) {
-            // 调用查询最短路径功能
-            shortestPath(scanner);
-        } else if (input3.equals("n")) {
-            System.out.println("已跳过查询最短路径功能。");
-        } else {
-            System.out.println("无效的输入。");
-        }
-        // 询问用户是否要使用随机游走功能
-        System.out.println("是否要使用随机游走功能?(输入 y 使用，输入 n 跳过)");
-        String input4 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
-        if (input4.equals("y")) {
-            String walknodes = randomWalk(scanner);
-            System.out.println("本次随机游走经过的结点为：\n");
-            System.out.println(walknodes);
-        } else if (input4.equals("n")) {
-            System.out.println("已跳过随机游走功能。");
-        } else {
-            System.out.println("无效的输入。");
-        }
-        scanner.close();
+    
+        // 使用 try-with-resources 来创建并管理 Scanner 对象
+        try (Scanner scanner = new Scanner(System.in, "UTF-8")) {
+            // 询问用户是否要使用查询桥接词功能
+            System.out.println("是否要使用查询桥接词功能？(输入 y 使用，输入 n 跳过)");
+            String input = scanner.nextLine().toLowerCase(); // 将输入转换为小写
+            switch (input) {
+                case "y" -> {
+                    // 调用查询桥接词函数
+                    query(scanner);
+                }
+                case "n" -> System.out.println("已跳过查询桥接词功能。");
+                default -> System.out.println("无效的输入。");
+            }
+    
+            // 询问用户是否要使用根据bridge word生成新文本
+            System.out.println("是否要使用根据bridge word生成新文本功能?(输入 y 使用，输入 n 跳过)");
+            String input2 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
+            switch (input2) {
+                case "y" -> {
+                    // 调用根据BridgeWords生成新文本功能
+                    generate(scanner);
+                }
+                case "n" -> System.out.println("已跳过根据BridgeWords生成新文本功能。");
+                default -> System.out.println("无效的输入。");
+            }
+    
+            // 询问用户是否要使用查询最短路径功能
+            System.out.println("是否要使用查询最短路径功能?(输入 y 使用，输入 n 跳过)");
+            String input3 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
+            switch (input3) {
+                case "y" -> {
+                    // 调用查询最短路径功能
+                    shortestPath(scanner);
+                }
+                case "n" -> System.out.println("已跳过查询最短路径功能。");
+                default -> System.out.println("无效的输入。");
+            }
+    
+            // 询问用户是否要使用随机游走功能
+            System.out.println("是否要使用随机游走功能?(输入 y 使用，输入 n 跳过)");
+            String input4 = scanner.nextLine().toLowerCase(); // 将输入转换为小写
+            switch (input4) {
+                case "y" -> {
+                    String walknodes = randomWalk(scanner);
+                    System.out.println("本次随机游走经过的结点为：\n");
+                    System.out.println(walknodes);
+                }
+                case "n" -> System.out.println("已跳过随机游走功能。");
+                default -> System.out.println("无效的输入。");
+            }
+        } // try-with-resources 会自动关闭 scanner
     }
+    
     public static void query(Scanner scanner) {     //桥接词查询
         System.out.println("请输入word1: ");
         String word1 = scanner.nextLine();
@@ -118,96 +115,97 @@ public class App
         String result = calcShortestPath(graph, word1, word2);
         System.out.println(result);
     }
-    public static Graph processText(String filePath) {       //生成图
+    public static Graph processText(String filePath) { // 生成图
         Graph localGraph = new SingleGraph("TextGraph");
-
+    
         try {
-            // 创建文件扫描器
+            // 创建文件对象
             File file = new File(filePath);
-            Scanner scanner = new Scanner(file);
-
-            // 使用 Map 记录单词和其出现次数
-            Map<String, Integer> wordCount = new HashMap<>();
-            // 创建一个 StringBuilder 对象用于保存处理后的文本内容
-            StringBuilder processedText = new StringBuilder();
-            // 逐行读取文本内容并处理
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-
-                // 只保留英文字符和空格，其他字符替换为空格
-                line = line.replaceAll("[^a-zA-Z\\s]+", " ");
-
-                // 将多个连续空格替换为单个空格
-                line = line.replaceAll("\\s+", " ");
-
-                processedText.append(line).append(" ");
-
-            }
-            // 将处理后的文本内容转换为一行
-            String processedLine = processedText.toString().trim();
-            // 输出整理好的字符串到控制台
-            System.out.println("整理后的文本内容：");
-            System.out.println(processedLine);
-            // 分割单词
-            String[] words = processedLine.split("\\s+");
-
-            // 更新单词出现次数
-            for (int i = 0; i < words.length; i++) {
-                String word = words[i].toLowerCase(); // 不区分大小写
-                wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
-
-                // 添加节点到图中
-                if (localGraph.getNode(word)==null) {
-                    localGraph.addNode(word);
+    
+            // 使用 try-with-resources 来创建并管理 Scanner 对象
+            try (Scanner scanner = new Scanner(file, "UTF-8")) {
+                // 使用 Map 记录单词和其出现次数
+                Map<String, Integer> wordCount = new HashMap<>();
+                // 创建一个 StringBuilder 对象用于保存处理后的文本内容
+                StringBuilder processedText = new StringBuilder();
+                // 逐行读取文本内容并处理
+                while (scanner.hasNextLine()) {
+                    String line = scanner.nextLine();
+    
+                    // 只保留英文字符和空格，其他字符替换为空格
+                    line = line.replaceAll("[^a-zA-Z\\s]+", " ");
+    
+                    // 将多个连续空格替换为单个空格
+                    line = line.replaceAll("\\s+", " ");
+    
+                    processedText.append(line).append(" ");
                 }
-
-                // 添加边到图中
-                if (i > 0) {
-                    String previousWord = words[i - 1].toLowerCase(); // 不区分大小写
-                    String edgeId = previousWord + "-" + word;
-
-                    // 在添加边之前检查是否已经存在
-                    if (localGraph.getEdge(edgeId) == null) {
-                        localGraph.addEdge(edgeId, previousWord, word, true);
+                // 将处理后的文本内容转换为一行
+                String processedLine = processedText.toString().trim();
+                // 输出整理好的字符串到控制台
+                System.out.println("整理后的文本内容：");
+                System.out.println(processedLine);
+                // 分割单词
+                String[] words = processedLine.split("\\s+");
+    
+                // 更新单词出现次数
+                for (int i = 0; i < words.length; i++) {
+                    String word = words[i].toLowerCase(); // 不区分大小写
+                    wordCount.put(word, wordCount.getOrDefault(word, 0) + 1);
+    
+                    // 添加节点到图中
+                    if (localGraph.getNode(word) == null) {
+                        localGraph.addNode(word);
+                    }
+    
+                    // 添加边到图中
+                    if (i > 0) {
+                        String previousWord = words[i - 1].toLowerCase(); // 不区分大小写
+                        String edgeId = previousWord + "-" + word;
+    
+                        // 在添加边之前检查是否已经存在
+                        if (localGraph.getEdge(edgeId) == null) {
+                            localGraph.addEdge(edgeId, previousWord, word, true);
+                        }
                     }
                 }
-            }
-            // 关闭文件扫描器
-            scanner.close();
-            // 设置边的权重为单词相邻出现的次数
-        localGraph.edges().forEach(edge -> {
-            String[] nodes = edge.getId().split("-");
-            String source = nodes[0];
-            String target = nodes[1];
-            int weight = 0;
-
-            // 计算边的权重为文本中边的两个节点相邻出现的次数
-            for (int i = 0; i < words.length - 1; i++) {
-                String currentWord = words[i].toLowerCase();
-                String nextWord = words[i + 1].toLowerCase();
-
-                // 如果当前单词和下一个单词分别是边的源节点和目标节点，则增加权重
-                if (currentWord.equals(source) && nextWord.equals(target)) {
-                    weight++;
+    
+                // 设置边的权重为单词相邻出现的次数
+                localGraph.edges().forEach(edge -> {
+                    String[] nodes = edge.getId().split("-");
+                    String source = nodes[0];
+                    String target = nodes[1];
+                    int weight = 0;
+    
+                    // 计算边的权重为文本中边的两个节点相邻出现的次数
+                    for (int i = 0; i < words.length - 1; i++) {
+                        String currentWord = words[i].toLowerCase();
+                        String nextWord = words[i + 1].toLowerCase();
+    
+                        // 如果当前单词和下一个单词分别是边的源节点和目标节点，则增加权重
+                        if (currentWord.equals(source) && nextWord.equals(target)) {
+                            weight++;
+                        }
+                    }
+    
+                    // 将计算得到的权重设置为边的属性
+                    edge.setAttribute("weight", weight);
+                });
+    
+                // 保存图到本地文件
+                FileSinkGraphML graphML = new FileSinkGraphML();
+                try {
+                    graphML.writeAll(localGraph, "output.graphml");
+                } catch (IOException e) {
+                    System.out.println("保存图为 GraphML 文件时出错: " + e.getMessage());
                 }
             }
-
-        // 将计算得到的权重设置为边的属性
-        edge.setAttribute("weight", weight);
-        //保存图到本地文件
-        FileSinkGraphML graphML = new FileSinkGraphML();
-        try {
-            graphML.writeAll(localGraph, "output.graphml");
-        } catch (IOException e) {
-            System.out.println("保存图为 GraphML 文件时出错: " + e.getMessage());
-        }
-        });}
-        catch (FileNotFoundException e) {
+        } catch (FileNotFoundException e) {
             System.out.println("文件未找到: " + e.getMessage());
         }
-
         return localGraph;
     }
+    
     /**
      * @param graph
      */
@@ -349,15 +347,14 @@ public class App
     {
         String[] words = inputText.split("\\s+");
         StringBuilder newText = new StringBuilder();
-        Random random = new Random();
-
+        // Random random = new Random();
         for (int i=0;i<words.length-1;i++)
         {
             newText.append(words[i]).append(" ");
             List<String> bridgeWords = findMiddleNodes(graph, words[i], words[i+1]);
             if (!bridgeWords.isEmpty())
             {
-                String bridgeWord = bridgeWords.get(random.nextInt(bridgeWords.size()));
+                String bridgeWord = bridgeWords.get(RANDOM.nextInt(bridgeWords.size()));
                 newText.append(bridgeWord).append(" ");
             } 
         }
@@ -525,8 +522,7 @@ public class App
         return nodes.get((int) (Math.random() * nodes.size()));
     }
     private static void writeWalkToFile(List<String> visitedNodes, List<String> visitedEdges) {
-        try {
-            FileWriter writer = new FileWriter("random_walk_output.txt");
+        try (FileWriter writer = new FileWriter("random_walk_output.txt", StandardCharsets.UTF_8)) {
             writer.write("Nodes visited:\n");
             for (String node : visitedNodes) {
                 writer.write(node + "\n");
@@ -535,12 +531,10 @@ public class App
             for (String edge : visitedEdges) {
                 writer.write(edge + "\n");
             }
-            writer.close();
             System.out.println("\nRandom walk results written to random_walk_output.txt\n");
         } catch (IOException e) {
             System.out.println("\nError writing random walk results to file: \n" + e.getMessage());
         }
     }
-    
 }
 
